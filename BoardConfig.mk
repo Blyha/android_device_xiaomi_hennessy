@@ -1,8 +1,43 @@
 # mt6795 platform boardconfig
 LOCAL_PATH := device/xiaomi/hennessy
+
+# Kernel
+ARGET_KERNEL_SOURCE := kernel/xiaomi/hennessy
+TARGET_KERNEL_CONFIG := hennessy_cyanogenmod12_1_defconfig
+TARGET_USES_64_BIT_BINDER := true
+TARGET_IS_64_BIT := true
+BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive
+BOARD_KERNEL_BASE := 0x40078000
+BOARD_KERNEL_PAGESIZE := 2048
+BOARD_MKBOOTIMG_ARGS := --base 0x40078000 --pagesize 2048 --kernel_offset 0x00008000 --ramdisk_offset 0x03f88000 --second_offset 0x00e88000 --tags_offset 0x0df88000 --board Bule
+BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
+TARGET_PREBUILT_KERNEL := device/xiaomi/hennessy/prebuilt/kernel
+BOARD_CUSTOM_BOOTIMG := true
+
+# Bluetooth
+BOARD_HAVE_BLUETOOTH := true
+BOARD_HAVE_BLUETOOTH_MTK := true
+BOARD_BLUETOOTH_DOES_NOT_USE_RFKILL := true
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/xiaomi/hennessy/bluetooth
+
+BOARD_HAS_NO_SELECT_BUTTON := true
+BOARD_RECOVERY_SWIPE := true
+BOARD_SUPPRESS_EMMC_WIPE := true
+BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
+TARGET_RECOVERY_FSTAB := device/xiaomi/hennessy/rootdir/recovery.fstab
+TARGET_RECOVERY_PIXEL_FORMAT := "RGBA_8888"
+TARGET_USERIMAGES_USE_EXT4 := true
+
+# Miravision and clearmotion
+MTK_MIRAVISION_IMAGE_DC_SUPPORT = yes
+MTK_MIRAVISION_SETTING_SUPPORT = yes
+MTK_CLEARMOTION_SUPPORT = yes
+
+# mt6795 platform boardconfig
+LOCAL_PATH := device/xiaomi/hennessy
 -include vendor/xiaomi/hennessy/BoardConfigVendor.mk
 
-TARGET_SPECIFIC_HEADER_PATH := device/xiaomi/hennessy/include
+TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
 USE_CAMERA_STUB := true
 TARGET_PROVIDES_INIT_RC := true
@@ -44,33 +79,36 @@ BOARD_USES_LEGACY_MTK_AV_BLOB := true
 COMMON_GLOBAL_CFLAGS += -DMTK_HARDWARE -DADD_LEGACY_ACQUIRE_BUFFER_SYMBOL
 COMMON_GLOBAL_CPPFLAGS += -DMTK_HARDWARE
 
+# RIL
+# moved to forked frameworks_opt_telephony repo
+#BOARD_RIL_CLASS := ../../../$(DEVICE_FOLDER)/ril/
+MTK_DT_SUPPORT := no
+MTK_VT3G324M_SUPPORT := no
+MTK_SHARE_MODEM_CURRENT := 1
+MTK_SHARE_MODEM_SUPPORT := 2
+MTK_IPV6_SUPPORT := yes
+MTK_LTE_SUPPORT := yes
+MTK_LTE_DC_SUPPORT := no
+MTK_SVLTE_SUPPORT := no
+MTK_EAP_SIM_AKA := yes
+MTK_IRAT_SUPPORT := no
+MTK_DTAG_DUAL_APN_SUPPORT := no
+MTK_MD1_SUPPORT := 5
+MTK_MD2_SUPPORT := 4
+MTK_MD3_SUPPORT := 2
+MTK_MD5_SUPPORT := 5
+MTK_ENABLE_MD1 = yes
+MTK_ENABLE_MD2 = no
+MTK_ENABLE_MD3 = no
+MTK_ENABLE_MD5 = no
+
 BOARD_CONNECTIVITY_VENDOR := MediaTek
 BOARD_USES_MTK_AUDIO := true
 
-# Kernel
-TARGET_USES_64_BIT_BINDER := true
-TARGET_IS_64_BIT := true
-BOARD_KERNEL_CMDLINE := bootopt=64S3,32N2,64N2 androidboot.selinux=permissive
-BOARD_KERNEL_BASE := 0x40078000
-BOARD_KERNEL_PAGESIZE := 2048
-BOARD_MKBOOTIMG_ARGS := --base 0x40078000 --pagesize 2048 --kernel_offset 0x00008000 --ramdisk_offset 0x03f88000 --second_offset 0x00e88000 --tags_offset 0x0df88000 --board Bule
-TARGET_PREBUILT_KERNEL := device/xiaomi/hennessy/prebuilt/kernel
-BOARD_CUSTOM_BOOTIMG := true
-
-# MKImage
-TARGET_MKIMAGE := device/xiaomi/hennessy/mkimage
-TARGET_USE_BUILT_BOOTIMAGE := true
-
-TARGET_KMODULES := true
 # Disable memcpy opt (for audio libraries)
 TARGET_CPU_MEMCPY_OPT_DISABLE := true
 
-# Display
-USE_OPENGL_RENDERER := true
-BOARD_EGL_CFG := device/xiaomi/hennessy/configs/egl.cfg
-TARGET_SCREEN_HEIGHT := 1920
-TARGET_SCREEN_WIDTH := 1080
-BOARD_EGL_WORKAROUND_BUG_10194508 := true
+TARGET_KMODULES := true
 
 # Flags
 TARGET_GLOBAL_CFLAGS   += -mfpu=neon -mfloat-abi=softfp
@@ -91,16 +129,10 @@ BOARD_CHARGER_SHOW_PERCENTAGE := true
 # Fonts
 EXTENDED_FONT_FOOTPRINT := true
 
-TARGET_SYSTEM_PROP := device/xiaomi/hennessy/system.prop
+TARGET_SYSTEM_PROP := $(LOCAL_PATH)/system.prop
 
 # PREBUILT_Chromium
-#PRODUCT_PREBUILT_WEBVIEWCHROMIUM := yes
-
-# Bluetooth
-BOARD_HAVE_BLUETOOTH := true
-BOARD_HAVE_BLUETOOTH_MTK := true
-BOARD_BLUETOOTH_DOES_NOT_USE_RFKILL := true
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/xiaomi/hennessy/bluetooth
+PRODUCT_PREBUILT_WEBVIEWCHROMIUM := yes
 
 # GPS
 BOARD_GPS_LIBRARIES :=true
@@ -108,8 +140,8 @@ BOARD_CONNECTIVITY_MODULE := MT6630
 BOARD_MEDIATEK_USES_GPS := true
 
 # FM
-MTK_FM_SUPPORT :=true
-MTK_FM_RX_SUPPORT :=true
+MTK_FM_SUPPORT :=yes
+MTK_FM_RX_SUPPORT :=yes
 
 # Consumerir
 MTK_IRTX_SUPPORT :=true
@@ -138,13 +170,16 @@ TARGET_USERIMAGES_USE_EXT4 := true
 
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/class/android_usb/android0/f_mass_storage/lun/file
 
-BOARD_HAS_NO_SELECT_BUTTON := true
-BOARD_RECOVERY_SWIPE := true
-BOARD_SUPPRESS_EMMC_WIPE := true
-BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
-TARGET_RECOVERY_FSTAB := device/xiaomi/hennessy/rootdir/recovery.fstab
-TARGET_RECOVERY_PIXEL_FORMAT := "RGBA_8888"
-TARGET_USERIMAGES_USE_EXT4 := true
+# MKImage
+TARGET_MKIMAGE := $(LOCAL_PATH)/mkimage
+TARGET_USE_BUILT_BOOTIMAGE := true
+
+# Display
+USE_OPENGL_RENDERER := true
+BOARD_EGL_CFG := $(LOCAL_PATH)/configs/egl.cfg
+TARGET_SCREEN_HEIGHT := 1920
+TARGET_SCREEN_WIDTH := 1080
+BOARD_EGL_WORKAROUND_BUG_10194508 := true
 
 # SELinux
 BOARD_SEPOLICY_DIRS := \
@@ -168,7 +203,6 @@ BOARD_SEPOLICY_UNION := \
     system_app.te \
     zygote.te \
     aal.te \
-    aee_core_forwarder.te \
     akmd09911.te \
     akmd8963.te \
     akmd8975.te \
@@ -271,7 +305,6 @@ BOARD_SEPOLICY_UNION += \
 	bluetooth.te \
 	bootanim.te \
 	clatd.te \
-	debuggerd.te \
 	drmserver.te \
 	dhcp.te \
 	dnsmasq.te \
@@ -328,4 +361,6 @@ BOARD_SEPOLICY_UNION += \
 	md_ctrl.te \
 	cmddumper.te \
 	tunman.te
+
+
 
